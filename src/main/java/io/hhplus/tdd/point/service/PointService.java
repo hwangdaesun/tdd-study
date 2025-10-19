@@ -5,9 +5,12 @@ import io.hhplus.tdd.database.UserPointTable;
 import io.hhplus.tdd.point.TransactionType;
 import io.hhplus.tdd.point.domain.Member;
 import io.hhplus.tdd.point.domain.Point;
+import io.hhplus.tdd.point.dto.PointHistory;
 import io.hhplus.tdd.point.dto.UserPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +39,10 @@ public class PointService {
 
     public UserPoint getPoint(long id) {
         return userPointTable.selectById(id);
+    }
+
+    public List<PointHistory> getHistory(long id) {
+        return pointHistoryTable.selectAllByUserId(id);
     }
 
 }
