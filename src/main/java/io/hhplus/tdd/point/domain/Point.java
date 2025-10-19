@@ -21,5 +21,13 @@ public class Point {
         this.amount = this.amount.add(amount);
         return this.amount;
     }
+
+    public BigInteger use(BigInteger amount){
+        if(amount.compareTo(BigInteger.ZERO) <= 0){
+            throw new IllegalArgumentException("사용할 포인트는 0보다 커야합니다.");
+        }
+        this.amount = this.amount.subtract(amount);
+        return this.amount;
+    }
 }
 
