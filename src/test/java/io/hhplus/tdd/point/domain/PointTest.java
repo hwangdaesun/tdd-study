@@ -1,5 +1,6 @@
 package io.hhplus.tdd.point.domain;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -13,14 +14,16 @@ class PointTest {
     @ValueSource(longs = {-1000L, -500L, -100L, -1L, 0L})
     void charge_WithNegativeAmount_ReturnsFalse(long invalidAmount) {
         // given
+        long currentAmount = 1000L;
         Member member = new Member(1);
-        Point point = new Point(member, 1000L);
+        Point point = new Point(member, currentAmount);
 
         // when
         boolean result = point.charge(invalidAmount);
 
         // then
         assertThat(result).isFalse();
+        Assertions.assertEquals(currentAmount, point.getAmount());
     }
 
 
