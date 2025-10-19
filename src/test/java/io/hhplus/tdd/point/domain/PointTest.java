@@ -1,6 +1,6 @@
 package io.hhplus.tdd.point.domain;
 
-import java.math.BigInteger;
+import io.hhplus.tdd.point.exception.PointOverflowException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,29 +16,30 @@ class PointTest {
     @ValueSource(longs = {-1000L, -500L, -100L, -1L, 0L})
     void charge_WithNegativeAmount_ThrowsException(long invalidAmount) {
         // given
-        BigInteger currentAmount = BigInteger.valueOf(1000L);
+        long currentAmount = 1000L;
         Member member = new Member(1);
         Point point = new Point(member, currentAmount);
 
         // when && then
-        assertThatThrownBy(() -> point.charge(BigInteger.valueOf(invalidAmount)))
+        assertThatThrownBy(() -> point.charge(invalidAmount))
                 .isInstanceOf(IllegalArgumentException.class);
         Assertions.assertEquals(currentAmount, point.getAmount());
     }
 
     @DisplayName("Long.MAX_VALUE 만큼 충전하면, 정상적으로 충전된다")
     @Test
-    void charge_Long_MaxValue_Success() {
+    void charge_EqualsMaxValue_Success() {
         // given
         Member member = new Member(1);
-        BigInteger currentAmount = BigInteger.valueOf(1000);
+        long currentAmount = Long.MAX_VALUE - 1000;
         Point point = new Point(member, currentAmount);
+        long chargeAmount = 1000L;
 
         // when
-        BigInteger chargedAmount = point.charge(BigInteger.valueOf(Long.MAX_VALUE));
+        long result = point.charge(chargeAmount);
 
         // then
-        Assertions.assertTrue(chargedAmount.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0);
+        Assertions.assertEquals(Long.MAX_VALUE, result);
     }
 
     @DisplayName("음수 금액 또는 0원으로 포인트를 사용하면 예외를 발생시킨다")
@@ -46,12 +47,12 @@ class PointTest {
     @ValueSource(longs = {-1000L, -500L, -100L, -1L, 0L})
     void use_WithNegativeOrZeroAmount_ThrowsException(long invalidAmount) {
         // given
-        BigInteger currentAmount = BigInteger.valueOf(10000L);
+        long currentAmount = 10000L;
         Member member = new Member(1);
         Point point = new Point(member, currentAmount);
 
         // when && then
-        assertThatThrownBy(() -> point.use(BigInteger.valueOf(invalidAmount)))
+        assertThatThrownBy(() -> point.use(invalidAmount))
                 .isInstanceOf(IllegalArgumentException.class);
         Assertions.assertEquals(currentAmount, point.getAmount());
     }
@@ -60,10 +61,10 @@ class PointTest {
     @Test
     void use_BigAmount_ThrowsException() {
         // given
-        BigInteger currentAmount = BigInteger.valueOf(1000L);
+        long currentAmount = 1000L;
         Member member = new Member(1);
         Point point = new Point(member, currentAmount);
-        BigInteger useAmount = BigInteger.valueOf(1500L);
+        long useAmount = 1500L;
 
         // when && then
         assertThatThrownBy(() -> point.use(useAmount))
@@ -71,17 +72,20 @@ class PointTest {
         Assertions.assertEquals(currentAmount, point.getAmount());
     }
 
-    @DisplayName("보유 포인트보다 많은 금액을 사용하려고 하면 예외를 발생시킨다")
+    @DisplayName("보유 포인트와 정확히 같은 금액을 사용하면 포인트가 0이 된다")
     @Test
     void use_ExactAmount_Success(){
         // given
-        BigInteger currentAmount = BigInteger.valueOf(1000L);
+        long currentAmount = 1000L;
         Member member = new Member(1);
         Point point = new Point(member, currentAmount);
-        BigInteger useAmount = BigInteger.valueOf(1000L);
+        long useAmount = 1000L;
 
-        // when && then
-        Assertions.assertEquals(useAmount, point.getAmount());
+        // when
+        long result = point.use(useAmount);
+
+        // then
+        Assertions.assertEquals(0L, result);
     }
 
 }
