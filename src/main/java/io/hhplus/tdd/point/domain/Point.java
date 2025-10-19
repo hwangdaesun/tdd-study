@@ -26,6 +26,9 @@ public class Point {
         if(amount.compareTo(BigInteger.ZERO) <= 0){
             throw new IllegalArgumentException("사용할 포인트는 0보다 커야합니다.");
         }
+        if(this.amount.compareTo(amount) < 0){
+            throw new IllegalArgumentException("포인트가 부족합니다.");
+        }
         this.amount = this.amount.subtract(amount);
         return this.amount;
     }
