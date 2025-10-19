@@ -1,23 +1,26 @@
 package io.hhplus.tdd.point.domain;
 
+import java.math.BigInteger;
+import java.sql.SQLOutput;
 import lombok.Getter;
 
 @Getter
 public class Point {
 
     private Member member;
-    private long amount;
+    private BigInteger amount;
 
-    public Point(Member member, long amount) {
+    public Point(Member member, BigInteger amount) {
         this.member = member;
         this.amount = amount;
     }
 
-    public void charge(long amount) {
-        if( amount <= 0){
+    public BigInteger charge(BigInteger amount) {
+        if(amount.compareTo(BigInteger.ZERO) <= 0){
             throw new IllegalArgumentException("충전할 포인트는 0보다 커야 합니다.");
         }
-        this.amount += amount;
+        this.amount = this.amount.add(amount);
+        return this.amount;
     }
 }
 

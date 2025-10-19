@@ -1,5 +1,6 @@
 package io.hhplus.tdd.point.domain;
 
+import java.math.BigInteger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,12 +16,12 @@ class PointTest {
     @ValueSource(longs = {-1000L, -500L, -100L, -1L, 0L})
     void charge_WithNegativeAmount_ThrowsException(long invalidAmount) {
         // given
-        long currentAmount = 1000L;
+        BigInteger currentAmount = BigInteger.valueOf(1000L);
         Member member = new Member(1);
         Point point = new Point(member, currentAmount);
 
         // when && then
-        assertThatThrownBy(() -> point.charge(invalidAmount))
+        assertThatThrownBy(() -> point.charge(BigInteger.valueOf(invalidAmount)))
                 .isInstanceOf(IllegalArgumentException.class);
         Assertions.assertEquals(currentAmount, point.getAmount());
     }
@@ -30,12 +31,14 @@ class PointTest {
     void charge_Long_MaxValue_Success() {
         // given
         Member member = new Member(1);
-        long currentAmount = 1000;
+        BigInteger currentAmount = BigInteger.valueOf(1000);
         Point point = new Point(member, currentAmount);
 
         // when
-        Assertions.assertDoesNotThrow(() -> point.charge(Long.MAX_VALUE));
-        Assertions.assertTrue(Long.MAX_VALUE < point.getAmount());
+        BigInteger chargedAmount = point.charge(BigInteger.valueOf(Long.MAX_VALUE));
+
+        // then
+        Assertions.assertTrue(chargedAmount.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0);
     }
 
 
