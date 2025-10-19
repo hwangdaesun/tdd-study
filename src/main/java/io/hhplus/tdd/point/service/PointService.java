@@ -1,7 +1,8 @@
-package io.hhplus.tdd.point;
+package io.hhplus.tdd.point.service;
 
 import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.database.UserPointTable;
+import io.hhplus.tdd.point.TransactionType;
 import io.hhplus.tdd.point.domain.Member;
 import io.hhplus.tdd.point.domain.Point;
 import io.hhplus.tdd.point.dto.UserPoint;
