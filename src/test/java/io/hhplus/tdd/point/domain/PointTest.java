@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 class PointTest {
@@ -24,6 +23,19 @@ class PointTest {
         assertThatThrownBy(() -> point.charge(invalidAmount))
                 .isInstanceOf(IllegalArgumentException.class);
         Assertions.assertEquals(currentAmount, point.getAmount());
+    }
+
+    @DisplayName("Long.MAX_VALUE 만큼 충전하면, 정상적으로 충전된다")
+    @Test
+    void charge_Long_MaxValue_Success() {
+        // given
+        Member member = new Member(1);
+        long currentAmount = 1000;
+        Point point = new Point(member, currentAmount);
+
+        // when
+        Assertions.assertDoesNotThrow(() -> point.charge(Long.MAX_VALUE));
+        Assertions.assertTrue(Long.MAX_VALUE < point.getAmount());
     }
 
 
