@@ -14,6 +14,9 @@ public class Point {
     }
 
     public boolean charge(long amount) {
+        if( amount <= 0){
+            return false;
+        }
         this.amount += amount;
         return true;
     }
