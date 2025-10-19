@@ -41,5 +41,22 @@ class PointTest {
         Assertions.assertTrue(chargedAmount.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0);
     }
 
+    @DisplayName("음수 금액 또는 0원으로 포인트를 사용하면 예외를 발생시킨다")
+    @ParameterizedTest
+    @ValueSource(longs = {-1000L, -500L, -100L, -1L, 0L})
+    void use_WithNegativeOrZeroAmount_ThrowsException(long invalidAmount) {
+        // given
+        BigInteger currentAmount = BigInteger.valueOf(10000L);
+        Member member = new Member(1);
+        Point point = new Point(member, currentAmount);
+
+        // when && then
+        assertThatThrownBy(() -> point.use(BigInteger.valueOf(invalidAmount)))
+                .isInstanceOf(IllegalArgumentException.class);
+        Assertions.assertEquals(currentAmount, point.getAmount());
+    }
+
+
+
 
 }
