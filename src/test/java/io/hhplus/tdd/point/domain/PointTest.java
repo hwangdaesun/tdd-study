@@ -26,7 +26,21 @@ class PointTest {
         Assertions.assertEquals(currentAmount, point.getAmount());
     }
 
-    @DisplayName("Long.MAX_VALUE 만큼 충전하면, 정상적으로 충전된다")
+    @DisplayName("충전 후 Long.MAX_VALUE를 초과하면 예외를 발생시킨다")
+    @Test
+    void charge_ExceedsMaxValue_ThrowsException() {
+        // given
+        Member member = new Member(1);
+        long currentAmount = Long.MAX_VALUE - 100;
+        Point point = new Point(member, currentAmount);
+        long chargeAmount = 200L;
+
+        // when && then
+        assertThatThrownBy(() -> point.charge(chargeAmount))
+                .isInstanceOf(PointOverflowException.class);
+    }
+
+    @DisplayName("충전 후 정확히 Long.MAX_VALUE가 되면 정상적으로 충전된다")
     @Test
     void charge_EqualsMaxValue_Success() {
         // given
