@@ -56,7 +56,32 @@ class PointTest {
         Assertions.assertEquals(currentAmount, point.getAmount());
     }
 
+    @DisplayName("보유 포인트보다 많은 금액을 사용하려고 하면 예외를 발생시킨다")
+    @Test
+    void use_BigAmount_ThrowsException() {
+        // given
+        BigInteger currentAmount = BigInteger.valueOf(1000L);
+        Member member = new Member(1);
+        Point point = new Point(member, currentAmount);
+        BigInteger useAmount = BigInteger.valueOf(1500L);
 
+        // when && then
+        assertThatThrownBy(() -> point.use(useAmount))
+                .isInstanceOf(IllegalArgumentException.class);
+        Assertions.assertEquals(currentAmount, point.getAmount());
+    }
 
+    @DisplayName("보유 포인트보다 많은 금액을 사용하려고 하면 예외를 발생시킨다")
+    @Test
+    void use_ExactAmount_Success(){
+        // given
+        BigInteger currentAmount = BigInteger.valueOf(1000L);
+        Member member = new Member(1);
+        Point point = new Point(member, currentAmount);
+        BigInteger useAmount = BigInteger.valueOf(1000L);
+
+        // when && then
+        Assertions.assertEquals(useAmount, point.getAmount());
+    }
 
 }
