@@ -34,4 +34,8 @@ public class PointService {
         return updatedUserPoint;
     }
 
+    public UserPoint getPoint(long id) {
+        return userPointTable.selectById(id);
+    }
+
 }
