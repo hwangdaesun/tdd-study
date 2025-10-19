@@ -6,6 +6,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 class PointTest {
 
@@ -18,11 +19,9 @@ class PointTest {
         Member member = new Member(1);
         Point point = new Point(member, currentAmount);
 
-        // when
-        boolean result = point.charge(invalidAmount);
-
-        // then
-        assertThat(result).isFalse();
+        // when && then
+        assertThatThrownBy(() -> point.charge(invalidAmount))
+                .isInstanceOf(IllegalArgumentException.class);
         Assertions.assertEquals(currentAmount, point.getAmount());
     }
 

@@ -13,12 +13,11 @@ public class Point {
         this.amount = amount;
     }
 
-    public boolean charge(long amount) {
+    public void charge(long amount) {
         if( amount <= 0){
-            return false;
+            throw new IllegalArgumentException("충전할 포인트는 0보다 커야 합니다.");
         }
         this.amount += amount;
-        return true;
     }
 }
 
