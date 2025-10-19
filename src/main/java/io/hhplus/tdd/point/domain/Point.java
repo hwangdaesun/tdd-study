@@ -1,7 +1,6 @@
 package io.hhplus.tdd.point.domain;
 
 import java.math.BigInteger;
-import java.sql.SQLOutput;
 import lombok.Getter;
 
 @Getter
