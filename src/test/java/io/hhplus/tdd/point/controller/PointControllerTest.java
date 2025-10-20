@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import io.hhplus.tdd.point.PointController;
 import io.hhplus.tdd.point.exception.ErrorCode;
 import io.hhplus.tdd.point.exception.InvalidChargeAmountException;
+import io.hhplus.tdd.point.exception.InvalidUseAmountException;
 import io.hhplus.tdd.point.exception.PointOverflowException;
 import io.hhplus.tdd.point.service.PointService;
 import org.junit.jupiter.api.DisplayName;
@@ -64,6 +65,25 @@ class PointControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(ErrorCode.POINT_OVERFLOW.getCode()))
                 .andExpect(jsonPath("$.message").value(ErrorCode.POINT_OVERFLOW.getMessage()));
+    }
+
+    @DisplayName("포인트 사용 시 InvalidUseAmountException 발생하면 적절하게 예외 처리가 된다.")
+    @Test
+    void use_throwsInvalidUseAmountException_correctly_handled_by_advice() throws Exception {
+        // given
+        long userId = 1L;
+        long invalidAmount = 0L;
+
+        given(pointService.use(anyLong(), anyLong()))
+                .willThrow(new InvalidUseAmountException());
+
+        // when & then
+        mockMvc.perform(patch("/point/{id}/use", userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(invalidAmount)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(ErrorCode.INVALID_USE_AMOUNT.getCode()))
+                .andExpect(jsonPath("$.message").value(ErrorCode.INVALID_USE_AMOUNT.getMessage()));
     }
     }
 }
