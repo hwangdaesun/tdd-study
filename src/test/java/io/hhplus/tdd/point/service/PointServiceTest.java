@@ -2,6 +2,7 @@ package io.hhplus.tdd.point.service;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -46,6 +47,6 @@ class PointServiceTest {
         pointService.charge(userId, chargeAmount);
 
         // then
-        verify(pointHistoryTable, times(1)).insert(anyLong(), anyLong(), any(TransactionType.class), anyLong());
+        verify(pointHistoryTable, times(1)).insert(anyLong(), anyLong(), eq(TransactionType.CHARGE), anyLong());
     }
 }
