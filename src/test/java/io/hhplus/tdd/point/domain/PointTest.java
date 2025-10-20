@@ -123,4 +123,22 @@ class PointTest {
         Assertions.assertEquals(0L, result);
     }
 
+    @DisplayName("포인트가 정상적으로 사용된다")
+    @Test
+    void use_Success() {
+        // given
+        Member member = new Member(1);
+        long currentAmount = 2000L;
+        Point point = new Point(member, currentAmount);
+        long useAmount = 500L;
+        long expectedAmount = 1500L;
+
+        // when
+        long result = point.use(useAmount);
+
+        // then
+        Assertions.assertEquals(expectedAmount, result);
+        Assertions.assertEquals(expectedAmount, point.getAmount());
+    }
+
 }
