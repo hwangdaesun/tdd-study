@@ -21,10 +21,10 @@ public class Point {
 
     public long charge(long amount) {
         if (amount <= 0) {
-            throw new InvalidChargeAmountException("충전할 포인트는 0보다 커야 합니다.");
+            throw new InvalidChargeAmountException();
         }
         if (this.amount > MAX_POINT - amount) {
-            throw new PointOverflowException("포인트 충전 시 최대 보유 한도를 초과할 수 없습니다.");
+            throw new PointOverflowException();
         }
         this.amount = this.amount + amount;
         return this.amount;
@@ -32,10 +32,10 @@ public class Point {
 
     public long use(long amount) {
         if (amount <= 0) {
-            throw new InvalidUseAmountException("사용할 포인트는 0보다 커야합니다.");
+            throw new InvalidUseAmountException();
         }
         if (this.amount < amount) {
-            throw new InsufficientPointException("포인트가 부족합니다.");
+            throw new InsufficientPointException();
         }
         this.amount = this.amount - amount;
         return this.amount;
