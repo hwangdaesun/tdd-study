@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import io.hhplus.tdd.point.PointController;
 import io.hhplus.tdd.point.exception.ErrorCode;
+import io.hhplus.tdd.point.exception.InsufficientPointException;
 import io.hhplus.tdd.point.exception.InvalidChargeAmountException;
 import io.hhplus.tdd.point.exception.InvalidUseAmountException;
 import io.hhplus.tdd.point.exception.PointOverflowException;
@@ -85,5 +86,23 @@ class PointControllerTest {
                 .andExpect(jsonPath("$.code").value(ErrorCode.INVALID_USE_AMOUNT.getCode()))
                 .andExpect(jsonPath("$.message").value(ErrorCode.INVALID_USE_AMOUNT.getMessage()));
     }
+
+    @DisplayName("포인트 사용 시 InsufficientPointException 발생하면 적절하게 예외 처리가 된다.")
+    @Test
+    void use_throwsInsufficientPointException_correctly_handled_by_advice() throws Exception {
+        // given
+        long userId = 1L;
+        long insufficientAmount = 10000L;
+
+        given(pointService.use(anyLong(), anyLong()))
+                .willThrow(new InsufficientPointException());
+
+        // when & then
+        mockMvc.perform(patch("/point/{id}/use", userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(insufficientAmount)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(ErrorCode.INSUFFICIENT_POINT.getCode()))
+                .andExpect(jsonPath("$.message").value(ErrorCode.INSUFFICIENT_POINT.getMessage()));
     }
 }
