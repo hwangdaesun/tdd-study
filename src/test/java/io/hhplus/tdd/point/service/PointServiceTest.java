@@ -8,7 +8,7 @@ import static org.mockito.Mockito.verify;
 
 import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.database.UserPointTable;
-import io.hhplus.tdd.point.controller.TransactionType;
+import io.hhplus.tdd.TransactionType;
 import io.hhplus.tdd.point.dto.UserPoint;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
