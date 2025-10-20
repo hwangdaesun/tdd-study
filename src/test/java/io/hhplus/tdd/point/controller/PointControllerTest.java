@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import io.hhplus.tdd.point.PointController;
 import io.hhplus.tdd.point.exception.ErrorCode;
 import io.hhplus.tdd.point.exception.InsufficientPointException;
 import io.hhplus.tdd.point.exception.InvalidChargeAmountException;
