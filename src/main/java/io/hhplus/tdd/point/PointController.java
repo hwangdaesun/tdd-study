@@ -26,6 +26,7 @@ public class PointController {
     public ResponseEntity<UserPoint> point(
             @PathVariable long id
     ) {
+        log.info("포인트 조회 요청 - userId: {}", id);
         UserPoint userPoint = pointService.getPoint(id);
         return ResponseEntity.ok(userPoint);
     }
@@ -37,6 +38,7 @@ public class PointController {
     public ResponseEntity<List<PointHistory>> history(
             @PathVariable long id
     ) {
+        log.info("포인트 내역 조회 요청 - userId: {}", id);
         List<PointHistory> histories = pointService.getHistory(id);
         return ResponseEntity.ok(histories);
     }
@@ -49,6 +51,7 @@ public class PointController {
             @PathVariable long id,
             @RequestBody long amount
     ) {
+        log.info("포인트 충전 요청 - userId: {}, amount: {}", id, amount);
         UserPoint userPoint = pointService.charge(id, amount);
         return ResponseEntity.ok(userPoint);
     }
@@ -61,6 +64,7 @@ public class PointController {
             @PathVariable long id,
             @RequestBody long amount
     ) {
+        log.info("포인트 사용 요청 - userId: {}, amount: {}", id, amount);
         UserPoint userPoint = pointService.use(id, amount);
         return ResponseEntity.ok(userPoint);
     }
