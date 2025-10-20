@@ -59,6 +59,24 @@ class PointTest {
         Assertions.assertEquals(Long.MAX_VALUE, result);
     }
 
+    @DisplayName("포인트가 정상적으로 충전된다")
+    @Test
+    void charge_Success() {
+        // given
+        Member member = new Member(1);
+        long currentAmount = 1000L;
+        Point point = new Point(member, currentAmount);
+        long chargeAmount = 500L;
+        long expectedAmount = 1500L;
+
+        // when
+        long result = point.charge(chargeAmount);
+
+        // then
+        Assertions.assertEquals(expectedAmount, result);
+        Assertions.assertEquals(expectedAmount, point.getAmount());
+    }
+
     @DisplayName("음수 금액 또는 0원으로 포인트를 사용하면 예외를 발생시킨다")
     @ParameterizedTest
     @ValueSource(longs = {-1000L, -500L, -100L, -1L, 0L})
