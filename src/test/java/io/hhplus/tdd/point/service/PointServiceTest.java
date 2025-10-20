@@ -49,4 +49,24 @@ class PointServiceTest {
         // then
         verify(pointHistoryTable, times(1)).insert(anyLong(), anyLong(), eq(TransactionType.CHARGE), anyLong());
     }
+
+    @DisplayName("포인트를 사용하면, 포인트 내역 저장을 호출한다.")
+    @Test
+    void use_saveHistory(){
+        // given
+        long userId = 1L;
+        long chargeAmount = 500L;
+        UserPoint dummyUserPoint = new UserPoint(1L, 1000, System.currentTimeMillis());
+
+        given(userPointTable.selectById(anyLong()))
+                .willReturn(dummyUserPoint);
+        given(userPointTable.insertOrUpdate(anyLong(), anyLong()))
+                .willReturn(dummyUserPoint);
+
+        // when
+        pointService.use(userId, chargeAmount);
+
+        // then
+        verify(pointHistoryTable, times(1)).insert(anyLong(), anyLong(), eq(TransactionType.USE), anyLong());
+    }
 }
