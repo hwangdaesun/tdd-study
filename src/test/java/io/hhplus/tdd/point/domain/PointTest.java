@@ -1,5 +1,8 @@
 package io.hhplus.tdd.point.domain;
 
+import io.hhplus.tdd.point.exception.InsufficientPointException;
+import io.hhplus.tdd.point.exception.InvalidChargeAmountException;
+import io.hhplus.tdd.point.exception.InvalidUseAmountException;
 import io.hhplus.tdd.point.exception.PointOverflowException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +25,7 @@ class PointTest {
 
         // when && then
         assertThatThrownBy(() -> point.charge(invalidAmount))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidChargeAmountException.class);
         Assertions.assertEquals(currentAmount, point.getAmount());
     }
 
@@ -67,7 +70,7 @@ class PointTest {
 
         // when && then
         assertThatThrownBy(() -> point.use(invalidAmount))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidUseAmountException.class);
         Assertions.assertEquals(currentAmount, point.getAmount());
     }
 
@@ -82,13 +85,13 @@ class PointTest {
 
         // when && then
         assertThatThrownBy(() -> point.use(useAmount))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InsufficientPointException.class);
         Assertions.assertEquals(currentAmount, point.getAmount());
     }
 
     @DisplayName("보유 포인트와 정확히 같은 금액을 사용하면 포인트가 0이 된다")
     @Test
-    void use_ExactAmount_Success(){
+    void use_ExactAmount_Success() {
         // given
         long currentAmount = 1000L;
         Member member = new Member(1);
