@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import io.hhplus.tdd.point.PointController;
 import io.hhplus.tdd.point.exception.ErrorCode;
 import io.hhplus.tdd.point.exception.InvalidChargeAmountException;
+import io.hhplus.tdd.point.exception.PointOverflowException;
 import io.hhplus.tdd.point.service.PointService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,5 +45,25 @@ class PointControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(ErrorCode.INVALID_CHARGE_AMOUNT.getCode()))
                 .andExpect(jsonPath("$.message").value(ErrorCode.INVALID_CHARGE_AMOUNT.getMessage()));
+    }
+
+    @DisplayName("포인트 충전 시 PointOverflowException 발생하면 적절하게 예외 처리가 된다.")
+    @Test
+    void charge_throwsPointOverflowException_correctly_handled_by_advice() throws Exception {
+        // given
+        long userId = 1L;
+        long overflowAmount = 1000L;
+
+        given(pointService.charge(anyLong(), anyLong()))
+                .willThrow(new PointOverflowException());
+
+        // when & then
+        mockMvc.perform(patch("/point/{id}/charge", userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(overflowAmount)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(ErrorCode.POINT_OVERFLOW.getCode()))
+                .andExpect(jsonPath("$.message").value(ErrorCode.POINT_OVERFLOW.getMessage()));
+    }
     }
 }
