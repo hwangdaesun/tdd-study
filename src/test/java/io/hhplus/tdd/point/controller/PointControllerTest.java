@@ -27,9 +27,9 @@ class PointControllerTest {
     @MockBean
     private PointService pointService;
 
-    @DisplayName("포인트 충전 API 호출 시 예외가 발생하면 적절하게 예외 처리가 된다.")
+    @DisplayName("포인트 충전 시 InvalidChargeAmountException 발생하면 적절하게 예외 처리가 된다.")
     @Test
-    void charge_throwsException_correctly_handled_by_advice() throws Exception {
+    void charge_throwsInvalidChargeAmountException_correctly_handled_by_advice() throws Exception {
         // given
         long userId = 1L;
         long invalidAmount = -100L;
