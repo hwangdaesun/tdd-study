@@ -1,4 +1,4 @@
-package io.hhplus.tdd.point;
+package io.hhplus.tdd.point.controller;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import io.hhplus.tdd.point.PointController;
 import io.hhplus.tdd.point.exception.ErrorCode;
 import io.hhplus.tdd.point.exception.InvalidChargeAmountException;
 import io.hhplus.tdd.point.service.PointService;

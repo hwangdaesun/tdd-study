@@ -1,4 +1,4 @@
-package io.hhplus.tdd;
+package io.hhplus.tdd.point.controller;
 
 import io.hhplus.tdd.point.exception.CustomException;
 import org.springframework.http.ResponseEntity;
