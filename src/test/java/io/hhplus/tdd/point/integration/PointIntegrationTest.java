@@ -98,4 +98,34 @@ class PointIntegrationTest {
         assertThat(histories.get(0).amount()).isEqualTo(chargeAmount);
         assertThat(histories.get(0).type()).isEqualTo(TransactionType.CHARGE);
     }
+
+    @DisplayName("포인트가 정상적으로 사용되고 히스토리가 기록된다")
+    @Test
+    void use_success() throws Exception {
+        // given
+        long userId = 4L;
+        long initialPoint = 2000L;
+        long useAmount = 500L;
+        long expectedPoint = 1500L;
+
+        userPointTable.insertOrUpdate(userId, initialPoint);
+
+        // when & then
+        mockMvc.perform(patch("/point/{id}/use", userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(useAmount)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(userId))
+                .andExpect(jsonPath("$.point").value(expectedPoint));
+
+        // 포인트 테이블 검증
+        UserPoint userPoint = userPointTable.selectById(userId);
+        assertThat(userPoint.point()).isEqualTo(expectedPoint);
+
+        // 히스토리 테이블 검증
+        List<PointHistory> histories = pointHistoryTable.selectAllByUserId(userId);
+        assertThat(histories).hasSize(1);
+        assertThat(histories.get(0).amount()).isEqualTo(useAmount);
+        assertThat(histories.get(0).type()).isEqualTo(TransactionType.USE);
+    }
 }
