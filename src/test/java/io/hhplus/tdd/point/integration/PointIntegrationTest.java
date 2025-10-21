@@ -44,4 +44,23 @@ class PointIntegrationTest {
                 .andExpect(jsonPath("$.point").value(expectedPoint));
     }
 
+    @DisplayName("사용자의 포인트 내역을 정상적으로 조회한다")
+    @Test
+    void getHistory_success() throws Exception {
+        // given
+        long userId = 2L;
+        userPointTable.insertOrUpdate(userId, 1000L);
+        pointHistoryTable.insert(userId, 500L, TransactionType.CHARGE, System.currentTimeMillis());
+        pointHistoryTable.insert(userId, 300L, TransactionType.USE, System.currentTimeMillis());
+
+        // when & then
+        mockMvc.perform(get("/point/{id}/histories", userId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].userId").value(userId))
+                .andExpect(jsonPath("$[0].type").value("CHARGE"))
+                .andExpect(jsonPath("$[1].type").value("USE"));
+    }
+
 }
