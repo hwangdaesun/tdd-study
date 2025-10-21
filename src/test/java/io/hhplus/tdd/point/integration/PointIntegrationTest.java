@@ -28,20 +28,14 @@ class PointIntegrationTest {
     @Autowired
     private PointHistoryTable pointHistoryTable;
 
-    @BeforeEach
-    void setUp() {
-        // 테스트 전 초기 데이터 설정
-        userPointTable.insertOrUpdate(1L, 1000L);
-        pointHistoryTable.insert(1L, 1000L, TransactionType.USE, System.currentTimeMillis());
-
-    }
-
     @DisplayName("사용자의 포인트를 정상적으로 조회한다")
     @Test
     void getPoint_success() throws Exception {
         // given
         long userId = 1L;
         long expectedPoint = 1000L;
+        userPointTable.insertOrUpdate(1L, 1000L);
+        pointHistoryTable.insert(1L, 1000L, TransactionType.USE, System.currentTimeMillis());
 
         // when & then
         mockMvc.perform(get("/point/{id}", userId))
