@@ -8,7 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -76,7 +75,6 @@ class PointServiceConcurrencyTest {
      */
     private void executeConcurrently(int threadCount, Runnable task) throws InterruptedException {
         ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(threadCount);
-        CountDownLatch readyLatch = new CountDownLatch(threadCount);
         CyclicBarrier startBarrier = new CyclicBarrier(threadCount);
         CountDownLatch completeLatch = new CountDownLatch(threadCount);
 
@@ -84,7 +82,6 @@ class PointServiceConcurrencyTest {
             for (int i = 0; i < threadCount; i++) {
                 executor.submit(() -> {
                     try {
-                        readyLatch.countDown(); // 준비 완료 신호
                         startBarrier.await();   // 모든 스레드가 준비될 때까지 대기
                         task.run();             // 실제 작업 실행
                     } catch (Exception e) {
@@ -95,8 +92,6 @@ class PointServiceConcurrencyTest {
                 });
             }
 
-            // 모든 스레드가 준비될 때까지 대기
-            readyLatch.await();
             // 모든 스레드가 작업을 완료할 때까지 대기 (최대 10초)
             boolean completed = completeLatch.await(10, TimeUnit.SECONDS);
             assertThat(completed).isTrue();
