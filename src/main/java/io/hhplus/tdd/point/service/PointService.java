@@ -39,13 +39,20 @@ public class PointService {
         }
     }
 
-    public UserPoint use(long id, long amount){
-        UserPoint userPoint = userPointTable.selectById(id);
-        Point point = new Point(new Member(userPoint.id()), userPoint.point());
-        long usedPoint = point.use(amount);
-        UserPoint updatedUserPoint = userPointTable.insertOrUpdate(id, usedPoint);
-        pointHistoryTable.insert(id, amount, TransactionType.USE, System.currentTimeMillis());
-        return updatedUserPoint;
+    public UserPoint use(long id, long amount) {
+        ReentrantLock lock = userLocks.computeIfAbsent(id, key -> new ReentrantLock());
+
+        lock.lock();
+        try {
+            UserPoint userPoint = userPointTable.selectById(id);
+            Point point = new Point(new Member(userPoint.id()), userPoint.point());
+            long usedPoint = point.use(amount);
+            UserPoint updatedUserPoint = userPointTable.insertOrUpdate(id, usedPoint);
+            pointHistoryTable.insert(id, amount, TransactionType.USE, System.currentTimeMillis());
+            return updatedUserPoint;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public UserPoint getPoint(long id) {
