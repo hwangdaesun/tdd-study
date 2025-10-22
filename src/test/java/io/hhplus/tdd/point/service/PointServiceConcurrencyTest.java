@@ -46,6 +46,28 @@ class PointServiceConcurrencyTest {
         assertThat(result.point()).isEqualTo(threadCount * chargeAmount);
     }
 
+    @DisplayName("동일한 사용자가 대해 동시에 포인트를 사용하면, 모든 사용이 정확히 반영되어야 한다")
+    @Test
+    void concurrentUse_shouldReflectAllUses() throws InterruptedException {
+        // given
+        long userId = 1L;
+        long useAmount = 100L;
+        int threadCount = 10;
+        long initialPoint = threadCount * useAmount;
+
+        // 초기 포인트 설정
+        userPointTable.insertOrUpdate(userId, initialPoint);
+
+        // when
+        executeConcurrently(threadCount, () -> {
+            pointService.use(userId, useAmount);
+        });
+
+        // then
+        UserPoint result = userPointTable.selectById(userId);
+        assertThat(result.point()).isEqualTo(0L);
+    }
+
     /**
      * 여러 스레드를 동시에 시작하여 작업을 실행하는 헬퍼 메서드
      *
