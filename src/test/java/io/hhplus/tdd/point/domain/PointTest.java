@@ -3,6 +3,7 @@ package io.hhplus.tdd.point.domain;
 import io.hhplus.tdd.point.exception.InsufficientPointException;
 import io.hhplus.tdd.point.exception.InvalidChargeAmountException;
 import io.hhplus.tdd.point.exception.InvalidUseAmountException;
+import io.hhplus.tdd.point.exception.InvalidUseUnitException;
 import io.hhplus.tdd.point.exception.PointOverflowException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -135,6 +136,39 @@ class PointTest {
 
         // when
         long result = point.use(useAmount);
+
+        // then
+        Assertions.assertEquals(expectedAmount, result);
+        Assertions.assertEquals(expectedAmount, point.getAmount());
+    }
+
+    @DisplayName("100원 단위가 아닌 포인트를 사용하려고 하면 예외를 발생시킨다")
+    @ParameterizedTest
+    @ValueSource(longs = {1L, 10L, 50L, 99L, 101L, 150L, 199L, 250L, 999L, 1001L})
+    void use_WithNonHundredUnit_ThrowsException(long invalidAmount) {
+        // given
+        long currentAmount = 10000L;
+        Member member = new Member(1);
+        Point point = new Point(member, currentAmount);
+
+        // when && then
+        assertThatThrownBy(() -> point.use(invalidAmount))
+                .isInstanceOf(InvalidUseUnitException.class);
+        Assertions.assertEquals(currentAmount, point.getAmount());
+    }
+
+    @DisplayName("100원 단위의 포인트는 정상적으로 사용된다")
+    @ParameterizedTest
+    @ValueSource(longs = {100L, 200L, 300L, 500L, 1000L, 1500L, 2000L})
+    void use_WithHundredUnit_Success(long validAmount) {
+        // given
+        long currentAmount = 10000L;
+        Member member = new Member(1);
+        Point point = new Point(member, currentAmount);
+        long expectedAmount = currentAmount - validAmount;
+
+        // when
+        long result = point.use(validAmount);
 
         // then
         Assertions.assertEquals(expectedAmount, result);
