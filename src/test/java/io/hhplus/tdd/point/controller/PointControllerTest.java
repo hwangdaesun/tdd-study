@@ -11,7 +11,7 @@ import io.hhplus.tdd.point.exception.InsufficientPointException;
 import io.hhplus.tdd.point.exception.InvalidChargeAmountException;
 import io.hhplus.tdd.point.exception.InvalidUseAmountException;
 import io.hhplus.tdd.point.exception.PointOverflowException;
-import io.hhplus.tdd.point.service.PointService;
+import io.hhplus.tdd.point.service.PointServiceV2;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ class PointControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private PointService pointService;
+    private PointServiceV2 pointServiceV2;
 
     @DisplayName("포인트 충전 시 InvalidChargeAmountException 발생하면 적절하게 예외 처리가 된다.")
     @Test
@@ -36,7 +36,7 @@ class PointControllerTest {
         long userId = 1L;
         long invalidAmount = -100L;
 
-        given(pointService.charge(anyLong(), anyLong()))
+        given(pointServiceV2.charge(anyLong(), anyLong()))
                 .willThrow(new InvalidChargeAmountException());
 
         // when & then
@@ -55,7 +55,7 @@ class PointControllerTest {
         long userId = 1L;
         long overflowAmount = 1000L;
 
-        given(pointService.charge(anyLong(), anyLong()))
+        given(pointServiceV2.charge(anyLong(), anyLong()))
                 .willThrow(new PointOverflowException());
 
         // when & then
@@ -74,7 +74,7 @@ class PointControllerTest {
         long userId = 1L;
         long invalidAmount = 0L;
 
-        given(pointService.use(anyLong(), anyLong()))
+        given(pointServiceV2.use(anyLong(), anyLong()))
                 .willThrow(new InvalidUseAmountException());
 
         // when & then
@@ -93,7 +93,7 @@ class PointControllerTest {
         long userId = 1L;
         long insufficientAmount = 10000L;
 
-        given(pointService.use(anyLong(), anyLong()))
+        given(pointServiceV2.use(anyLong(), anyLong()))
                 .willThrow(new InsufficientPointException());
 
         // when & then

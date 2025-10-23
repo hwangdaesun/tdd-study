@@ -2,7 +2,7 @@ package io.hhplus.tdd.point.controller;
 
 import io.hhplus.tdd.point.dto.PointHistory;
 import io.hhplus.tdd.point.dto.UserPoint;
-import io.hhplus.tdd.point.service.PointService;
+import io.hhplus.tdd.point.service.PointServiceV2;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,7 @@ import java.util.List;
 public class PointController {
 
     private static final Logger log = LoggerFactory.getLogger(PointController.class);
-    private final PointService pointService;
+    private final PointServiceV2 pointService;
 
     /**
      * 특정 유저의 포인트를 조회하는 기능을 작성해주세요.
