@@ -1,5 +1,6 @@
 package io.hhplus.tdd.point.domain;
 
+import io.hhplus.tdd.point.exception.ExceedMaxWithdrawalException;
 import io.hhplus.tdd.point.exception.InsufficientPointException;
 import io.hhplus.tdd.point.exception.InvalidChargeAmountException;
 import io.hhplus.tdd.point.exception.InvalidUseAmountException;
@@ -163,6 +164,57 @@ class PointTest {
     void use_WithHundredUnit_Success(long validAmount) {
         // given
         long currentAmount = 10000L;
+        Member member = new Member(1);
+        Point point = new Point(member, currentAmount);
+        long expectedAmount = currentAmount - validAmount;
+
+        // when
+        long result = point.use(validAmount);
+
+        // then
+        Assertions.assertEquals(expectedAmount, result);
+        Assertions.assertEquals(expectedAmount, point.getAmount());
+    }
+
+    @DisplayName("100만원을 초과하는 금액을 사용하려고 하면 예외를 발생시킨다")
+    @ParameterizedTest
+    @ValueSource(longs = {1_000_100L, 1_100_000L, 1_500_000L, 2_000_000L, 10_000_000L})
+    void use_ExceedMaxWithdrawal_ThrowsException(long invalidAmount) {
+        // given
+        long currentAmount = 100_000_000L; // 충분한 포인트 보유
+        Member member = new Member(1);
+        Point point = new Point(member, currentAmount);
+
+        // when && then
+        assertThatThrownBy(() -> point.use(invalidAmount))
+                .isInstanceOf(ExceedMaxWithdrawalException.class);
+        Assertions.assertEquals(currentAmount, point.getAmount());
+    }
+
+    @DisplayName("정확히 100만원을 사용하면 정상적으로 출금된다")
+    @Test
+    void use_ExactlyOneMillionWon_Success() {
+        // given
+        long currentAmount = 5_000_000L;
+        Member member = new Member(1);
+        Point point = new Point(member, currentAmount);
+        long useAmount = 1_000_000L;
+        long expectedAmount = 4_000_000L;
+
+        // when
+        long result = point.use(useAmount);
+
+        // then
+        Assertions.assertEquals(expectedAmount, result);
+        Assertions.assertEquals(expectedAmount, point.getAmount());
+    }
+
+    @DisplayName("100만원 이하의 금액은 정상적으로 사용된다")
+    @ParameterizedTest
+    @ValueSource(longs = {100L, 10_000L, 100_000L, 500_000L, 999_900L})
+    void use_WithinMaxWithdrawalLimit_Success(long validAmount) {
+        // given
+        long currentAmount = 10_000_000L;
         Member member = new Member(1);
         Point point = new Point(member, currentAmount);
         long expectedAmount = currentAmount - validAmount;
