@@ -18,7 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class PointServiceTest {
+class PointServiceV2Test {
 
     @Mock
     private PointHistoryTable pointHistoryTable;
@@ -26,8 +26,11 @@ class PointServiceTest {
     @Mock
     private UserPointTable userPointTable;
 
+    @Mock
+    private PointRollbackHandler rollbackHandler;
+
     @InjectMocks
-    private PointService pointService;
+    private PointServiceV2 pointService;
 
     @DisplayName("포인트를 충전하면, 포인트 내역 저장을 호출한다.")
     @Test
@@ -39,6 +42,8 @@ class PointServiceTest {
 
         given(userPointTable.selectById(anyLong()))
                 .willReturn(dummyUserPoint);
+        given(pointHistoryTable.selectAllByUserId(anyLong()))
+                .willReturn(java.util.Collections.emptyList());
         given(userPointTable.insertOrUpdate(anyLong(), anyLong()))
                 .willReturn(dummyUserPoint);
 
@@ -59,6 +64,8 @@ class PointServiceTest {
 
         given(userPointTable.selectById(anyLong()))
                 .willReturn(dummyUserPoint);
+        given(pointHistoryTable.selectAllByUserId(anyLong()))
+                .willReturn(java.util.Collections.emptyList());
         given(userPointTable.insertOrUpdate(anyLong(), anyLong()))
                 .willReturn(dummyUserPoint);
 
