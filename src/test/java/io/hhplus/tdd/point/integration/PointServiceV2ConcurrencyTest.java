@@ -12,6 +12,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,12 @@ public class PointServiceV2ConcurrencyTest {
 
     @Autowired
     private PointServiceV2 pointServiceV2;
+
+    @BeforeEach
+    void setUp() {
+        userPointTable.clear();
+        pointHistoryTable.clear();
+    }
 
     @DisplayName("동일한 사용자가 동시에 포인트를 충전하면, 성공한 충전만 정확히 반영되어야 한다")
     @Test

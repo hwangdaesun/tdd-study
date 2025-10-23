@@ -28,6 +28,15 @@ public class PointHistoryTable {
         return table.stream().filter(pointHistory -> pointHistory.userId() == userId).toList();
     }
 
+    /**
+     * 테스트 격리를 위한 데이터 초기화 메서드.
+     * 프로덕션 코드에서는 사용하지 않습니다.
+     */
+    public void clear() {
+        table.clear();
+        cursor = 1;
+    }
+
     private void throttle(long millis) {
         try {
             TimeUnit.MILLISECONDS.sleep((long) (Math.random() * millis));

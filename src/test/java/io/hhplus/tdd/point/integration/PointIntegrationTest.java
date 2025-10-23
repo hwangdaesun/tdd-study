@@ -12,6 +12,7 @@ import io.hhplus.tdd.database.UserPointTable;
 import io.hhplus.tdd.point.dto.PointHistory;
 import io.hhplus.tdd.point.dto.UserPoint;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,12 @@ class PointIntegrationTest {
 
     @Autowired
     private PointHistoryTable pointHistoryTable;
+
+    @BeforeEach
+    void setUp() {
+        userPointTable.clear();
+        pointHistoryTable.clear();
+    }
 
     @DisplayName("사용자의 포인트를 정상적으로 조회한다")
     @Test
