@@ -1,10 +1,11 @@
-package io.hhplus.tdd.point.service;
+package io.hhplus.tdd.point.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.database.UserPointTable;
 import io.hhplus.tdd.point.dto.UserPoint;
+import io.hhplus.tdd.point.service.PointServiceV2;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Executors;
