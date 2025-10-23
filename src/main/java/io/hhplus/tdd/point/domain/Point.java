@@ -3,6 +3,7 @@ package io.hhplus.tdd.point.domain;
 import io.hhplus.tdd.point.exception.InsufficientPointException;
 import io.hhplus.tdd.point.exception.InvalidChargeAmountException;
 import io.hhplus.tdd.point.exception.InvalidUseAmountException;
+import io.hhplus.tdd.point.exception.InvalidUseUnitException;
 import io.hhplus.tdd.point.exception.PointOverflowException;
 import lombok.Getter;
 
@@ -33,6 +34,9 @@ public class Point {
     public long use(long amount) {
         if (amount <= 0) {
             throw new InvalidUseAmountException();
+        }
+        if (amount % 100 != 0) {
+            throw new InvalidUseUnitException();
         }
         if (this.amount < amount) {
             throw new InsufficientPointException();
