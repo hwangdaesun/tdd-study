@@ -14,6 +14,7 @@ public enum ErrorCode {
     // Point Use Errors
     INVALID_USE_AMOUNT("POINT_003", "사용할 포인트는 0보다 커야합니다.", HttpStatus.BAD_REQUEST),
     INSUFFICIENT_POINT("POINT_004", "포인트가 부족합니다.", HttpStatus.BAD_REQUEST),
+    INVALID_USE_UNIT("POINT_007", "포인트는 100원 단위로만 사용할 수 있습니다.", HttpStatus.BAD_REQUEST),
 
     // Concurrency Errors
     POINT_LOCK_TIMEOUT("POINT_005", "포인트 처리가 지연되고 있습니다. 잠시 후 다시 시도해주세요.", HttpStatus.CONFLICT),
