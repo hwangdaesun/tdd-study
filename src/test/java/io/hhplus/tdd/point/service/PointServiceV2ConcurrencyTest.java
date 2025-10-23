@@ -5,28 +5,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.database.UserPointTable;
 import io.hhplus.tdd.point.dto.UserPoint;
-import io.hhplus.tdd.point.exception.CustomException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
+@SpringBootTest
 public class PointServiceV2ConcurrencyTest {
-    private UserPointTable userPointTable;
-    private PointHistoryTable pointHistoryTable;
-    private PointServiceV2 pointServiceV2;
 
-    @BeforeEach
-    void setUp() {
-        userPointTable = new UserPointTable();
-        pointHistoryTable = new PointHistoryTable();
-        pointServiceV2 = new PointServiceV2(pointHistoryTable, userPointTable);
-    }
+    @Autowired
+    private UserPointTable userPointTable;
+
+    @Autowired
+    private PointHistoryTable pointHistoryTable;
+
+    @Autowired
+    private PointServiceV2 pointServiceV2;
 
     @DisplayName("동일한 사용자가 동시에 포인트를 충전하면, 성공한 충전만 정확히 반영되어야 한다")
     @Test
@@ -46,7 +46,7 @@ public class PointServiceV2ConcurrencyTest {
             try {
                 pointServiceV2.charge(userId, chargeAmount);
                 successCount.incrementAndGet();
-            } catch (CustomException e) {
+            } catch (RuntimeException e) {
                 failCount.incrementAndGet();
             }
         });
