@@ -1,0 +1,107 @@
+package io.hhplus.tdd.point.controller;
+
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import io.hhplus.tdd.point.exception.ErrorCode;
+import io.hhplus.tdd.point.exception.InsufficientPointException;
+import io.hhplus.tdd.point.exception.InvalidChargeAmountException;
+import io.hhplus.tdd.point.exception.InvalidUseAmountException;
+import io.hhplus.tdd.point.exception.PointOverflowException;
+import io.hhplus.tdd.point.service.PointServiceV2;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+
+@WebMvcTest(PointController.class)
+class PointControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private PointServiceV2 pointServiceV2;
+
+    @DisplayName("포인트 충전 시 InvalidChargeAmountException 발생하면 적절하게 예외 처리가 된다.")
+    @Test
+    void charge_throwsInvalidChargeAmountException_correctly_handled_by_advice() throws Exception {
+        // given
+        long userId = 1L;
+        long invalidAmount = -100L;
+
+        given(pointServiceV2.charge(anyLong(), anyLong()))
+                .willThrow(new InvalidChargeAmountException());
+
+        // when & then
+        mockMvc.perform(patch("/point/{id}/charge", userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(invalidAmount)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(ErrorCode.INVALID_CHARGE_AMOUNT.getCode()))
+                .andExpect(jsonPath("$.message").value(ErrorCode.INVALID_CHARGE_AMOUNT.getMessage()));
+    }
+
+    @DisplayName("포인트 충전 시 PointOverflowException 발생하면 적절하게 예외 처리가 된다.")
+    @Test
+    void charge_throwsPointOverflowException_correctly_handled_by_advice() throws Exception {
+        // given
+        long userId = 1L;
+        long overflowAmount = 1000L;
+
+        given(pointServiceV2.charge(anyLong(), anyLong()))
+                .willThrow(new PointOverflowException());
+
+        // when & then
+        mockMvc.perform(patch("/point/{id}/charge", userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(overflowAmount)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(ErrorCode.POINT_OVERFLOW.getCode()))
+                .andExpect(jsonPath("$.message").value(ErrorCode.POINT_OVERFLOW.getMessage()));
+    }
+
+    @DisplayName("포인트 사용 시 InvalidUseAmountException 발생하면 적절하게 예외 처리가 된다.")
+    @Test
+    void use_throwsInvalidUseAmountException_correctly_handled_by_advice() throws Exception {
+        // given
+        long userId = 1L;
+        long invalidAmount = 0L;
+
+        given(pointServiceV2.use(anyLong(), anyLong()))
+                .willThrow(new InvalidUseAmountException());
+
+        // when & then
+        mockMvc.perform(patch("/point/{id}/use", userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(invalidAmount)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(ErrorCode.INVALID_USE_AMOUNT.getCode()))
+                .andExpect(jsonPath("$.message").value(ErrorCode.INVALID_USE_AMOUNT.getMessage()));
+    }
+
+    @DisplayName("포인트 사용 시 InsufficientPointException 발생하면 적절하게 예외 처리가 된다.")
+    @Test
+    void use_throwsInsufficientPointException_correctly_handled_by_advice() throws Exception {
+        // given
+        long userId = 1L;
+        long insufficientAmount = 10000L;
+
+        given(pointServiceV2.use(anyLong(), anyLong()))
+                .willThrow(new InsufficientPointException());
+
+        // when & then
+        mockMvc.perform(patch("/point/{id}/use", userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(String.valueOf(insufficientAmount)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(ErrorCode.INSUFFICIENT_POINT.getCode()))
+                .andExpect(jsonPath("$.message").value(ErrorCode.INSUFFICIENT_POINT.getMessage()));
+    }
+}

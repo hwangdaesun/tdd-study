@@ -1,6 +1,6 @@
 package io.hhplus.tdd.database;
 
-import io.hhplus.tdd.point.UserPoint;
+import io.hhplus.tdd.point.dto.UserPoint;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -25,6 +25,14 @@ public class UserPointTable {
         UserPoint userPoint = new UserPoint(id, amount, System.currentTimeMillis());
         table.put(id, userPoint);
         return userPoint;
+    }
+
+    /**
+     * 테스트 격리를 위한 데이터 초기화 메서드.
+     * 프로덕션 코드에서는 사용하지 않습니다.
+     */
+    public void clear() {
+        table.clear();
     }
 
     private void throttle(long millis) {
